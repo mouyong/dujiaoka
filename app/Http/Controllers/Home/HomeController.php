@@ -149,7 +149,9 @@ class HomeController extends BaseController
             ];
             $dbConfig['redis']['default'] = array_merge($dbConfig['redis']['default'], $redisDB);
             config(['database' => $dbConfig]);
-            (new DatabaseServiceProvider(app()))->register();
+            // need to call DB::purge() after changing connection config programatically
+            // @see https://github.com/laravel/framework/issues/44499
+            DB::purge();
             // db测试
             DB::connection()->select('select 1 limit 1');
             // redis测试
